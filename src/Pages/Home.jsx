@@ -21,7 +21,7 @@ import { Button } from "@/components/ui/button";
 let api = "https://test-swagger-2ph6.onrender.com/users";
 const Home = () => {
   let [data, setData] = useState([]);
-  let [elemEdit,setElemedit]=useState(null)
+  let [elemEdit,setElemedit]=useState({})
   function handleSubmit(e) {
     e.preventDefault();
     let newUser = {
@@ -32,6 +32,33 @@ const Home = () => {
       city: e.target.city.value,
     };
     addUSer(newUser);
+  }
+  function handleEdit(e) {
+    e.preventDefault()
+    let updateUser={
+name:elemEdit.name,
+email:elemEdit.email,
+password:elemEdit.password,
+role:elemEdit.role,
+city:elemEdit.city,
+id:elemEdit.id
+    }
+    editUser(updateUser)
+
+  }
+  async function editUser(user) {
+    try {
+      
+      let token = localStorage.getItem("token");
+      await axios.put(api+"/"+user.id,user,{
+      headers: {
+        Authorization: `Bearer ${token}`,
+      }})
+      get()
+    } catch (error) {
+      console.error(error);
+      
+    }
   }
   async function addUSer(newUser) {
     try {
@@ -140,16 +167,16 @@ const Home = () => {
           <DialogHeader>
             <DialogTitle>Are you absolutely sure?</DialogTitle>
             <DialogDescription>
-              <form
+              <form onSubmit={handleEdit}
                 action=""
                 className="border borde-black"
                 
               >
-                <input type="text" value={el.name} name="name" id="" />
-                <input type="text" value={el.email} name="email" id="" />
-                <input type="text" value={el.password} name="pass" id="" />
-                <input type="text" value={el.city} name="city" id="" />
-                <select name="select" value={el.role} id="">
+                <input type="text" value={elemEdit.name} onChange={(e)=>setElemedit({...elemEdit,name:e.target.value})} name="name" id="" />
+                <input type="text" value={elemEdit.email} onChange={(e)=>setElemedit({...elemEdit,email:e.target.value})} name="email" id="" />
+                <input type="text" value={elemEdit.password} onChange={(e)=>setElemedit({...elemEdit,password:e.target.value})} name="pass" id="" />
+                <input type="text" value={elemEdit.city} onChange={(e)=>setElemedit({...elemEdit,city:e.target.value})} name="city" id="" />
+                <select name="select" value={elemEdit.role} onChange={(e)=>setElemedit({...elemEdit,role:e.target.value})} id="">
                   <option value="user">User</option>
                   <option value="admin">Admin</option>
                 </select>

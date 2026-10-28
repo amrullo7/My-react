@@ -10,11 +10,11 @@ const Layout = () => {
               About Us
             </Link>
             <Link className="text-[16px] " to={"/about"}>
-              Courses
+              Catalogs
             </Link>
             <Link className="text-[16px]  " to={"/login"}>Login</Link>
-            <Link className="text-[16px] ">Blog</Link>
-            <Link className="text-[16px] ">Contacts</Link>
+            <Link className="text-[16px] " to={"/products"} >Catalog</Link>
+            <Link className="text-[16px] " >Contacts</Link>
           </div>
          
         </nav>
