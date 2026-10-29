@@ -1,10 +1,11 @@
-
 {
-  "about": "About Us",
-  "catalogs": "Catalogs",
-  "login": "Login",
-  "catalog": "Catalog",
-  "contacts": "Contacts",
-  "darkMode": "Dark Mode",
-  "lightMode": "Light Mode"
+  "greeting": "Hi there, my name is Jane Cooper",
+  "title1": "Showcase Your Work",
+  "title2": "with Airfolio's",
+  "title3": "Creative Solutions",
+  "description": "Create stunning portfolios and websites with Airfolio's UI/UX design and Webflow development services.",
+  "hireMe": "Hire Me",
+  "Portfolio": "Portfolio",
+  "partners": "Our Partners",
+  "aboutMe": "About Me"
 }

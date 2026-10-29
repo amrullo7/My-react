@@ -1,198 +1,180 @@
-import axios from "axios";
-import React, { useEffect, useState } from "react";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-let api = "https://test-swagger-2ph6.onrender.com/users";
+
+import React from "react";
+import { useTranslation } from "react-i18next";
+import man from "../Layout/img/hero image.png";
+
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay } from "swiper/modules";
+
+import "swiper/css";
+
+import gen from "../Layout/img/GenZ.png";
+import lin from "../Layout/img/LinkedIn svg.png";
+import ter1 from "../Layout/img/Terra-Color 1 (1).png";
+import ter2 from "../Layout/img/Trace-Color 2.png";
+import bl from "../Layout/img/Black.png";
+import pl from "../Layout/img/Placeholder Image.png";
+
 const Home = () => {
-  let [data, setData] = useState([]);
-  let [elemEdit,setElemedit]=useState({})
-  function handleSubmit(e) {
-    e.preventDefault();
-    let newUser = {
-      name: e.target.name.value,
-      email: e.target.email.value,
-      password: e.target.pass.value,
-      role: e.target.select.value,
-      city: e.target.city.value,
-    };
-    addUSer(newUser);
-  }
-  function handleEdit(e) {
-    e.preventDefault()
-    let updateUser={
-name:elemEdit.name,
-email:elemEdit.email,
-password:elemEdit.password,
-role:elemEdit.role,
-city:elemEdit.city,
-id:elemEdit.id
-    }
-    editUser(updateUser)
+  const { t } = useTranslation();
 
-  }
-  async function editUser(user) {
-    try {
-      
-      let token = localStorage.getItem("token");
-      await axios.put(api+"/"+user.id,user,{
-      headers: {
-        Authorization: `Bearer ${token}`,
-      }})
-      get()
-    } catch (error) {
-      console.error(error);
-      
-    }
-  }
-  async function addUSer(newUser) {
-    try {
-      let token = localStorage.getItem("token");
-      await axios.post(api, newUser, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      get();
-    } catch (error) {
-      console.error(error);
-    }
-  }
-  async function handleDelete(id) {
-    try {
-      let token = localStorage.getItem("token");
-      await axios.delete(api + "/" + id, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      get();
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  async function get() {
-    try {
-      let token = localStorage.getItem("token");
-      let data = await axios.get(api, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setData(data.data);
-    } catch (error) {
-      console.error(error);
-    }
-  }
-  useEffect(() => {
-    get();
-  }, []);
   return (
-    <div>
-      <Dialog>
-        <DialogTrigger>
-          <Button >+  Add</Button>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Are you absolutely sure?</DialogTitle>
-            <DialogDescription>
-              <form
-                action=""
-                className="border borde-black"
-                onSubmit={handleSubmit}
-              >
-                <input type="text" name="name" id="" />
-                <input type="text" name="email" id="" />
-                <input type="text" name="pass" id="" />
-                <input type="text" name="city" id="" />
-                <select name="select" id="">
-                  <option value="user">User</option>
-                  <option value="admin">Admin</option>
-                </select>
+    <div className="">
+      <div className="flex flex-col lg:flex-row items-center justify-center gap-[40px] mt-[50px] px-6">
+        <div className="w-full max-w-[584px] flex flex-col gap-[15px] mt-[15px]">
+          <p className="text-[16px]">
+            {t("greeting")}
+          </p>
 
-                <button type="submit">Add</button>
-              </form>
-            </DialogDescription>
-          </DialogHeader>
-        </DialogContent>
-      </Dialog>
-      <Table>
-        <TableCaption>A list of your recent invoices.</TableCaption>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Invoice</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Method</TableHead>
-            <TableHead>Amount</TableHead>
-            <TableHead>Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {data.map((el) => {
-            return (
-              <TableRow key={el.id}>
-                <TableCell>{el.name}</TableCell>
-                <TableCell>{el.email}</TableCell>
-                <TableCell>{el.role}</TableCell>
-                <TableCell>{el.city}</TableCell>
-                <TableCell>
-                  <Button
-                    className="bg-red-800"
-                    onClick={() => handleDelete(el.id)}
-                  >
-                    Delete
-                  </Button>
-                  <Dialog>
-        <DialogTrigger>
-          <Button className="bg-green-700" onClick={()=>setElemedit(el)}>Edit</Button>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Are you absolutely sure?</DialogTitle>
-            <DialogDescription>
-              <form onSubmit={handleEdit}
-                action=""
-                className="border borde-black"
-                
-              >
-                <input type="text" value={elemEdit.name} onChange={(e)=>setElemedit({...elemEdit,name:e.target.value})} name="name" id="" />
-                <input type="text" value={elemEdit.email} onChange={(e)=>setElemedit({...elemEdit,email:e.target.value})} name="email" id="" />
-                <input type="text" value={elemEdit.password} onChange={(e)=>setElemedit({...elemEdit,password:e.target.value})} name="pass" id="" />
-                <input type="text" value={elemEdit.city} onChange={(e)=>setElemedit({...elemEdit,city:e.target.value})} name="city" id="" />
-                <select name="select" value={elemEdit.role} onChange={(e)=>setElemedit({...elemEdit,role:e.target.value})} id="">
-                  <option value="user">User</option>
-                  <option value="admin">Admin</option>
-                </select>
+          <h1 className="text-[40px] font-semibold">
+            {t("title1")} <br />
+            {t("title2")} <br />
+            {t("title3")}
+          </h1>
 
-                <button type="submit">Add</button>
-              </form>
-            </DialogDescription>
-          </DialogHeader>
-        </DialogContent>
-      </Dialog>
-                </TableCell>
-              </TableRow>
-            );
-          })}
-        </TableBody>
-      </Table>
+          <p>
+            {t("description")}
+          </p>
+
+          <div className="flex gap-[10px]">
+            <button className="w-[107px] h-[52px] border rounded-[15px] bg-[#078D84] text-white">
+              {t("hireMe")}
+            </button>
+
+            <button className="w-[107px] h-[52px] border rounded-[15px] text-[#078D84] border-[#078D84]">
+              {t("Portfolio")}
+            </button>
+          </div>
+        </div>
+
+        <img
+          src={man}
+          alt=""
+          className=""
+        />
+      </div>
+
+      <div className="flex justify-center mt-[80px]">
+        <h1 className="text-[35px] font-bold">
+          {t("partners")}
+        </h1>
+      </div>
+
+      <div className="mt-[80px] w-full overflow-hidden py-[35px] bg-gradient-to-r from-[#071F2A] via-[#104E52] to-[#071F2A] relative">
+
+        <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_center,rgba(7,141,132,0.28),transparent_70%)]" />
+
+        <div className="absolute left-0 top-0 z-10 h-full w-[50px] bg-gradient-to-r from-[#071F2A] to-transparent pointer-events-none" />
+
+        <div className="absolute right-0 top-0 z-10 h-full w-[50px] bg-gradient-to-l from-[#071F2A] to-transparent pointer-events-none" />
+
+        <Swiper
+          modules={[Autoplay]}
+          slidesPerView="auto"
+          spaceBetween={35}
+          loop={true}
+          speed={4000}
+          allowTouchMove={false}
+          autoplay={{
+            delay: 0,
+            disableOnInteraction: false,
+            pauseOnMouseEnter: false,
+          }}
+          className="logoSwiper relative z-[1]"
+        >
+          <SwiperSlide className="!w-[180px] !h-[90px] flex items-center justify-center">
+            <div className="flex h-[80px] w-[170px] items-center justify-center rounded-2xl border border-white/20 bg-white/10 px-4 shadow-lg backdrop-blur-md">
+              <img src={bl} alt="Black logo" className="h-[55px] w-[140px] object-contain" />
+            </div>
+          </SwiperSlide>
+
+          <SwiperSlide className="!w-[180px] !h-[90px] flex items-center justify-center">
+            <div className="flex h-[80px] w-[170px] items-center justify-center rounded-2xl border border-white/20 bg-white/10 px-4 shadow-lg backdrop-blur-md">
+              <img src={ter1} alt="Terra logo" className="h-[55px] w-[140px] object-contain" />
+            </div>
+          </SwiperSlide>
+
+          <SwiperSlide className="!w-[180px] !h-[90px] flex items-center justify-center">
+            <div className="flex h-[80px] w-[170px] items-center justify-center rounded-2xl border border-white/20 bg-white/10 px-4 shadow-lg backdrop-blur-md">
+              <img src={ter2} alt="Trace logo" className="h-[55px] w-[140px] object-contain" />
+            </div>
+          </SwiperSlide>
+
+          <SwiperSlide className="!w-[180px] !h-[90px] flex items-center justify-center">
+            <div className="flex h-[80px] w-[170px] items-center justify-center rounded-2xl border border-white/20 bg-white/10 px-4 shadow-lg backdrop-blur-md">
+              <img src={lin} alt="LinkedIn logo" className="h-[55px] w-[140px] object-contain" />
+            </div>
+          </SwiperSlide>
+
+          <SwiperSlide className="!w-[180px] !h-[90px] flex items-center justify-center">
+            <div className="flex h-[80px] w-[170px] items-center justify-center rounded-2xl border border-white/20 bg-white/10 px-4 shadow-lg backdrop-blur-md">
+              <img src={gen} alt="GenZ logo" className="h-[55px] w-[140px] object-contain" />
+            </div>
+          </SwiperSlide>
+
+          <SwiperSlide className="!w-[180px] !h-[90px] flex items-center justify-center">
+            <div className="flex h-[80px] w-[170px] items-center justify-center rounded-2xl border border-white/20 bg-white/10 px-4 shadow-lg backdrop-blur-md">
+              <img src={bl} alt="Black logo" className="h-[55px] w-[140px] object-contain" />
+            </div>
+          </SwiperSlide>
+
+          <SwiperSlide className="!w-[180px] !h-[90px] flex items-center justify-center">
+            <div className="flex h-[80px] w-[170px] items-center justify-center rounded-2xl border border-white/20 bg-white/10 px-4 shadow-lg backdrop-blur-md">
+              <img src={ter1} alt="Terra logo" className="h-[55px] w-[140px] object-contain" />
+            </div>
+          </SwiperSlide>
+
+          <SwiperSlide className="!w-[180px] !h-[90px] flex items-center justify-center">
+            <div className="flex h-[80px] w-[170px] items-center justify-center rounded-2xl border border-white/20 bg-white/10 px-4 shadow-lg backdrop-blur-md">
+              <img src={ter2} alt="Trace logo" className="h-[55px] w-[140px] object-contain" />
+            </div>
+          </SwiperSlide>
+
+          <SwiperSlide className="!w-[180px] !h-[90px] flex items-center justify-center">
+            <div className="flex h-[80px] w-[170px] items-center justify-center rounded-2xl border border-white/20 bg-white/10 px-4 shadow-lg backdrop-blur-md">
+              <img src={lin} alt="LinkedIn logo" className="h-[55px] w-[140px] object-contain" />
+            </div>
+          </SwiperSlide>
+
+          <SwiperSlide className="!w-[180px] !h-[90px] flex items-center justify-center">
+            <div className="flex h-[80px] w-[170px] items-center justify-center rounded-2xl border border-white/20 bg-white/10 px-4 shadow-lg backdrop-blur-md">
+              <img src={gen} alt="GenZ logo" className="h-[55px] w-[140px] object-contain" />
+            </div>
+          </SwiperSlide>
+        </Swiper>
+      </div>
+
+      <div className="flex justify-center mt-[70px] gap-[45px]">
+        <img
+          src={pl}
+          alt=""
+          className=""
+        />
+
+        <div className="flex flex-col items-center justify-center gap-[40px] mt-[50px] px-6">
+          <div className="w-full max-w-[584px] flex flex-col gap-[35px] mt-[15px]">
+            <p className="text-[16px]">
+              {t("greeting")}
+            </p>
+
+            <h1 className="text-[40px] font-semibold">
+              {t("title1")} <br />
+              {t("title2")} <br />
+              {t("title3")}
+            </h1>
+
+            <p>
+              {t("description")}
+            </p>
+
+            <div className="flex gap-[10px]">
+              <button className="w-[107px] h-[52px] border rounded-[15px] bg-[#078D84] text-white">
+                {t("aboutMe")}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

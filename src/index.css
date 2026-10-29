@@ -128,3 +128,6 @@
     @apply font-sans;
   }
 }
+.logoSwiper .swiper-wrapper {
+  transition-timing-function: linear !important;
+}
