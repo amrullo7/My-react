@@ -71,7 +71,7 @@ const NotFound = () => {
           {
             Array.from({ length: dataProductsTotalPage }).map((e, i) => {
               const page = i + 1
-              return <p onClick={() => setDataProductsPage(page)} className='border p-2 px-4 rounded-xl cursor-pointer hover:bg-amber-50'>{page}</p>
+              return <p onClick={() => setPage(page)} className='border p-2 px-4 rounded-xl cursor-pointer hover:bg-amber-50'>{page}</p>
             })
           }
         </div>
