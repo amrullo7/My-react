@@ -9,7 +9,6 @@ const About =lazy(()=>import("./Pages/About"))
 
 import NotFound from './Pages/NotFound';
 import Login from './Pages/Login';
-import Authflow from './Pages/Authflow';
                                             
 
 const App = () => {
@@ -21,7 +20,6 @@ const App = () => {
         {
           index:true,
           element:
-          <Authflow>
 
           <Suspense fallback={<div>
             <p>Home</p>
@@ -30,13 +28,10 @@ const App = () => {
                   
             <Home/>
           </Suspense>
-          </Authflow>
-
         },
         {
           path:"about",
           element:
-          <Authflow>
 
           <Suspense fallback={
             <div> 
@@ -46,18 +41,14 @@ const App = () => {
           }>
 <About/>
           </Suspense>
-          </Authflow>
         },
         {
           path:"products",
           element:
-          <Authflow>
-
           <Suspense fallback={<div>LOADING......</div>}>
 
             <Products/>
           </Suspense>
-          </Authflow>
         },{
           path:"login",
           element:<Login/>
