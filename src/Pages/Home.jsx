@@ -1,179 +1,201 @@
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import React, { useReducer, useState } from "react";
+const inittalState = {
+  userToEdit: null,
+  editOpen: false,
+  count: 0,
+  value: 0,
+  data: [
+    { id: 1, name: "Amrullo" },
+    { id: 2, name: "Abdullo" },
+  ],
+};
 
-import React from "react";
-import { useTranslation } from "react-i18next";
-import man from "../Layout/img/hero image.png";
+const countReducer = (state, action) => {
+  if (action.type == "increment") {
+    return { ...state, count: state.count + 1 };
+  }
+  if (action.type == "decrement") {
+    return { ...state, count: state.count - 1 };
+  }
+  if (action.type == "delete") {
+    return { ...state, data: state.data.filter((e) => e.id != action.value) };
+  }
+  if (action.type == "clear") {
+    return { ...state, count: (state.count = 0) };
+  }
+  if (action.type == "add") {
+    return { ...state, data: [...state.data, action.value] };
+  }
+  if (action.type == "open_edit") {
+    return { ...state, editOpen: true, userToEdit: { ...action.value } };
+  }
 
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay } from "swiper/modules";
+  if (action.type == "change_input") {
+    return {
+      ...state,
+      userToEdit: { ...state.userToEdit, ...action.value },
+    };
+  }
 
-import "swiper/css";
+  // EDIT USER
+  if (action.type == "edit") {
+    const e = action.event;
+    e.preventDefault();
 
-import gen from "../Layout/img/GenZ.png";
-import lin from "../Layout/img/LinkedIn svg.png";
-import ter1 from "../Layout/img/Terra-Color 1 (1).png";
-import ter2 from "../Layout/img/Trace-Color 2.png";
-import bl from "../Layout/img/Black.png";
-import pl from "../Layout/img/Placeholder Image.png";
+    const updatedData = state.data.map((el) => {
+      if (el.id === state.userToEdit.id) {
+        return {
+          ...el,
+          name: state.userToEdit.name,
+          age: state.userToEdit.age,
+          city: state.userToEdit.city,
+        };
+      }
+      return el;
+    });
+
+    return { ...state, data: updatedData, editOpen: false, userToEdit: null };
+  }
+
+  if (action.type == "close_dialog") {
+    return { ...state, dialogOpen: action.value };
+  }
+
+  if (action.type == "close_edit") {
+    return { ...state, editOpen: action.value };
+  }
+
+  return state;
+};
 
 const Home = () => {
-  const { t } = useTranslation();
+  const [state, dispatch] = useReducer(countReducer, inittalState);
+  console.log(state);
 
+  function addUser(e) {
+    e.preventDefault();
+    let newUser = {
+      name: e.target.name.value,
+      id: Date.now(),
+    };
+    dispatch({ type: "add", value: newUser });
+  }
   return (
-    <div className="">
-      <div className="flex flex-col lg:flex-row items-center justify-center gap-[40px] mt-[50px] px-6">
-        <div className="w-full max-w-[584px] flex flex-col gap-[15px] mt-[15px]">
-          <p className="text-[16px]">
-            {t("greeting")}
-          </p>
+    <div>
+      <Dialog>
+        <DialogTrigger>
+          <Button className="bg-blue-700">Add</Button>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader></DialogHeader>
+          <form action="" onSubmit={addUser}>
+            <label className="block text-sm font-semibold text-slate-600 mb-2">
+              Full Name
+            </label>
+            <input
+              type="text"
+              placeholder="Enter your name..."
+              required
+              name="name"
+              className="w-full border-2 border-slate-400 rounded-xl px-4 py-3 outline-none "
+            />
+            <Button type="submit">Add</Button>
+          </form>
+        </DialogContent>
+      </Dialog>
+      <Table className="w-[100%]">
+        <TableCaption>A list of your recent invoices.</TableCaption>
+        <TableHeader>
+          <TableRow>
+            <TableHead>ID</TableHead>
+            <TableHead>NAME</TableHead>
+            <TableHead>ACTIONS</TableHead>
+          </TableRow>
+        </TableHeader>
+        {state.data.map((e) => {
+          return (
+            <TableRow>
+              <TableCell>{e.id}</TableCell>
+              <TableCell>{e.name}</TableCell>
+              <TableCell>
+                {" "}
+                <Button
+                  className="bg-red-700"
+                  onClick={() => dispatch({ type: "delete", value: e.id })}
+                >
+                  Delete
+                </Button>
+                <Button
+                  onClick={() => dispatch({ type: "open_edit", value: e })}
+                  className="bg-green-800"
+                >
+                  Edit
+                </Button>
+              </TableCell>
+            </TableRow>
+          );
+        })}
 
-          <h1 className="text-[40px] font-semibold">
-            {t("title1")} <br />
-            {t("title2")} <br />
-            {t("title3")}
-          </h1>
-
-          <p>
-            {t("description")}
-          </p>
-
-          <div className="flex gap-[10px]">
-            <button className="w-[107px] h-[52px] border rounded-[15px] bg-[#078D84] text-white">
-              {t("hireMe")}
-            </button>
-
-            <button className="w-[107px] h-[52px] border rounded-[15px] text-[#078D84] border-[#078D84]">
-              {t("Portfolio")}
-            </button>
-          </div>
-        </div>
-
-        <img
-          src={man}
-          alt=""
-          className=""
-        />
-      </div>
-
-      <div className="flex justify-center mt-[80px]">
-        <h1 className="text-[35px] font-bold">
-          {t("partners")}
-        </h1>
-      </div>
-
-      <div className="mt-[80px] w-full overflow-hidden py-[35px] bg-gradient-to-r from-[#071F2A] via-[#104E52] to-[#071F2A] relative">
-
-        <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_center,rgba(7,141,132,0.28),transparent_70%)]" />
-
-        <div className="absolute left-0 top-0 z-10 h-full w-[50px] bg-gradient-to-r from-[#071F2A] to-transparent pointer-events-none" />
-
-        <div className="absolute right-0 top-0 z-10 h-full w-[50px] bg-gradient-to-l from-[#071F2A] to-transparent pointer-events-none" />
-
-        <Swiper
-          modules={[Autoplay]}
-          slidesPerView="auto"
-          spaceBetween={35}
-          loop={true}
-          speed={4000}
-          allowTouchMove={false}
-          autoplay={{
-            delay: 0,
-            disableOnInteraction: false,
-            pauseOnMouseEnter: false,
-          }}
-          className="logoSwiper relative z-[1]"
+        <TableBody></TableBody>
+      </Table>
+      <div className="">
+        <Dialog
+          open={state.editOpen}
+          onOpenChange={(open) => dispatch({ type: "close_edit", value: open })}
         >
-          <SwiperSlide className="!w-[180px] !h-[90px] flex items-center justify-center">
-            <div className="flex h-[80px] w-[170px] items-center justify-center rounded-2xl border border-white/20 bg-white/10 px-4 shadow-lg backdrop-blur-md">
-              <img src={bl} alt="Black logo" className="h-[55px] w-[140px] object-contain" />
-            </div>
-          </SwiperSlide>
+          <DialogContent className="sm:max-w-[450px] rounded-2xl p-6">
+            <DialogHeader>
+              <DialogTitle className="text-2xl font-bold text-slate-800">
+                Edit User
+              </DialogTitle>
+            </DialogHeader>
 
-          <SwiperSlide className="!w-[180px] !h-[90px] flex items-center justify-center">
-            <div className="flex h-[80px] w-[170px] items-center justify-center rounded-2xl border border-white/20 bg-white/10 px-4 shadow-lg backdrop-blur-md">
-              <img src={ter1} alt="Terra logo" className="h-[55px] w-[140px] object-contain" />
-            </div>
-          </SwiperSlide>
+            <form
+              onSubmit={(e) => dispatch({ type: "edit", event: e })}
+              className="flex flex-col gap-4 mt-4"
+            >
+              <div>
+                <label className="block text-sm font-semibold text-slate-600 mb-2">
+                  Full Name
+                </label>
+                <input
+                  type="text"
+                  placeholder="Enter your name..."
+                  required
+                  name="name"
+                  value={state.userToEdit?.name}
+                  onChange={(e) =>
+                    dispatch({
+                      type: "change_input",
+                      value: { name: e.target.value },
+                    })
+                  }
+                  className="w-full border-2 border-slate-400 rounded-xl px-4 py-3 outline-none "
+                />
+              </div>
 
-          <SwiperSlide className="!w-[180px] !h-[90px] flex items-center justify-center">
-            <div className="flex h-[80px] w-[170px] items-center justify-center rounded-2xl border border-white/20 bg-white/10 px-4 shadow-lg backdrop-blur-md">
-              <img src={ter2} alt="Trace logo" className="h-[55px] w-[140px] object-contain" />
-            </div>
-          </SwiperSlide>
-
-          <SwiperSlide className="!w-[180px] !h-[90px] flex items-center justify-center">
-            <div className="flex h-[80px] w-[170px] items-center justify-center rounded-2xl border border-white/20 bg-white/10 px-4 shadow-lg backdrop-blur-md">
-              <img src={lin} alt="LinkedIn logo" className="h-[55px] w-[140px] object-contain" />
-            </div>
-          </SwiperSlide>
-
-          <SwiperSlide className="!w-[180px] !h-[90px] flex items-center justify-center">
-            <div className="flex h-[80px] w-[170px] items-center justify-center rounded-2xl border border-white/20 bg-white/10 px-4 shadow-lg backdrop-blur-md">
-              <img src={gen} alt="GenZ logo" className="h-[55px] w-[140px] object-contain" />
-            </div>
-          </SwiperSlide>
-
-          <SwiperSlide className="!w-[180px] !h-[90px] flex items-center justify-center">
-            <div className="flex h-[80px] w-[170px] items-center justify-center rounded-2xl border border-white/20 bg-white/10 px-4 shadow-lg backdrop-blur-md">
-              <img src={bl} alt="Black logo" className="h-[55px] w-[140px] object-contain" />
-            </div>
-          </SwiperSlide>
-
-          <SwiperSlide className="!w-[180px] !h-[90px] flex items-center justify-center">
-            <div className="flex h-[80px] w-[170px] items-center justify-center rounded-2xl border border-white/20 bg-white/10 px-4 shadow-lg backdrop-blur-md">
-              <img src={ter1} alt="Terra logo" className="h-[55px] w-[140px] object-contain" />
-            </div>
-          </SwiperSlide>
-
-          <SwiperSlide className="!w-[180px] !h-[90px] flex items-center justify-center">
-            <div className="flex h-[80px] w-[170px] items-center justify-center rounded-2xl border border-white/20 bg-white/10 px-4 shadow-lg backdrop-blur-md">
-              <img src={ter2} alt="Trace logo" className="h-[55px] w-[140px] object-contain" />
-            </div>
-          </SwiperSlide>
-
-          <SwiperSlide className="!w-[180px] !h-[90px] flex items-center justify-center">
-            <div className="flex h-[80px] w-[170px] items-center justify-center rounded-2xl border border-white/20 bg-white/10 px-4 shadow-lg backdrop-blur-md">
-              <img src={lin} alt="LinkedIn logo" className="h-[55px] w-[140px] object-contain" />
-            </div>
-          </SwiperSlide>
-
-          <SwiperSlide className="!w-[180px] !h-[90px] flex items-center justify-center">
-            <div className="flex h-[80px] w-[170px] items-center justify-center rounded-2xl border border-white/20 bg-white/10 px-4 shadow-lg backdrop-blur-md">
-              <img src={gen} alt="GenZ logo" className="h-[55px] w-[140px] object-contain" />
-            </div>
-          </SwiperSlide>
-        </Swiper>
-      </div>
-
-      <div className="flex justify-center mt-[70px] gap-[45px]">
-        <img
-          src={pl}
-          alt=""
-          className=""
-        />
-
-        <div className="flex flex-col items-center justify-center gap-[40px] mt-[50px] px-6">
-          <div className="w-full max-w-[584px] flex flex-col gap-[35px] mt-[15px]">
-            <p className="text-[16px]">
-              {t("greeting")}
-            </p>
-
-            <h1 className="text-[40px] font-semibold">
-              {t("title1")} <br />
-              {t("title2")} <br />
-              {t("title3")}
-            </h1>
-
-            <p>
-              {t("description")}
-            </p>
-
-            <div className="flex gap-[10px]">
-              <button className="w-[107px] h-[52px] border rounded-[15px] bg-[#078D84] text-white">
-                {t("aboutMe")}
-              </button>
-            </div>
-          </div>
-        </div>
+              <Button type="submit">Save Changes</Button>
+            </form>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
