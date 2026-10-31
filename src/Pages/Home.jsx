@@ -10,7 +10,7 @@ const Home = () => {
   },[count10])
   return (
     <div>
-  <button onClick={()=>{setCount((prev)=>prev+1),count==10?setCount10(true):null}}>{count}</button>
+  <button onClick={()=>{setCount((prev)=>prev+2),count==100?setCount10(true):null}}>{count}</button>
 Salom
 <Btn text={obj}></Btn>
     </div>
