@@ -10,8 +10,13 @@ const About =lazy(()=>import("./Pages/About"))
 import NotFound from './Pages/NotFound';
 import Login from './Pages/Login';
 import Authflow from './Pages/Authflow';
+import Check from './Pages/Check';
+import Me from './Pages/Me';
+import Wishlist from './Pages/Wishlist';
+import { useTranslation } from "react-i18next";
 
 const App = () => {
+  const { t } = useTranslation();
   const router=createBrowserRouter([
     {
       path:"/",
@@ -23,8 +28,8 @@ const App = () => {
           <Authflow>
 
           <Suspense fallback={<div>
-            <p>Home</p>
-            <p>Loading your page please be patient....</p>
+            <p>{t("Home")}</p>
+            <p>{t("Loading your page please be patient....")}</p>
           </div>}>
                   
             <Home/>
@@ -33,14 +38,14 @@ const App = () => {
 
         },
         {
-          path:"about",
+          path:"shop/:id",
           element:
           <Authflow>
 
           <Suspense fallback={
             <div> 
-              <p>About </p>
-            <p>Loading your page please be patient....</p>
+              <p>{t("About")}</p>
+            <p>{t("Loading your page please be patient....")}</p>
             </div>
           }>
 <About/>
@@ -48,16 +53,37 @@ const App = () => {
           </Authflow>
         },
         {
-          path:"products",
+          path:"cart",
           element:
           <Authflow>
 
-          <Suspense fallback={<div>LOADING......</div>}>
+          <Suspense fallback={<div>{t("LOADING......")}</div>}>
 
             <Products/>
           </Suspense>
           </Authflow>
         },{
+          path:"wish",
+          element:<Wishlist/>
+        },
+        {
+          path:"check",
+          element:
+          
+          <Authflow>
+
+            <Check/>
+          </Authflow>
+        },{
+          path:"me",
+          element:
+          
+          <Authflow>
+
+            <Me/>
+          </Authflow>
+        },
+        {
           path:"login",
           element:<Login/>
         }
